@@ -1,0 +1,24 @@
+#! /bin/bash
+
+app=`cat APPNAME`
+host=`hostname -s`
+www_files=`grep -v '^#' WWW-FILES`
+user=`id -un`
+
+wdir=/var/www/html/${app}-${user}
+
+mkdir -p $wdir
+
+function putfile {
+    if [ $user = production ]
+    then
+	cp -f $1 ${wdir}/.
+    else
+	ln -sf ${PWD}/$1 ${wdir}/.
+    fi
+}
+
+for i in $www_files
+do
+    putfile $i
+done
